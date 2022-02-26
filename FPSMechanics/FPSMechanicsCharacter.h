@@ -58,6 +58,10 @@ class AFPSMechanicsCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, Category = Mesh)
 	UParticleSystemComponent* SmokeParticleSystemComponent;
 
+	/** Booster particle for jetpack */
+	UPROPERTY(EditDefaultsOnly, Category = Mesh)
+		UParticleSystemComponent* HoldingParticleSystemComponent;
+
 public:
 	AFPSMechanicsCharacter();
 
@@ -115,10 +119,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
 
-	/** particle that plays when we are holding an object*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
-	UParticleSystem* HoldingEmitter;
-
 	/** particle that plays when we are jetpacking*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
 	UParticleSystem* FireEmitter;
@@ -127,7 +127,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
 		FRotator ParticleRotation;
 
-	/** jetpack smoke rotaion*/
+	/** jetpack smoke vector*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particles")
 		FVector SmokeParticleLocation;
 
@@ -169,7 +169,7 @@ public:
 
 	/** the decrease in movement velocity in percent*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
-		float AirBreak = 0.75f;
+		float AirBrake = 0.75f;
 
 	/** The rate of which the fuel is refueled*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
@@ -184,9 +184,6 @@ public:
 		float RefuelDelay = 2.f;
 
 private:
-
-	/** Holding Particle System Component*/
-	UParticleSystemComponent* HoldingParticleSystemComponent;
 
 	/** Sound Components*/
 	UAudioComponent* HoldingSoundComponent;
@@ -203,6 +200,9 @@ private:
 
 	/** Character's Current Velocity*/
 	FVector CurrentVelocity;
+
+	/** Direction vector from input*/
+	FVector InputDirection = FVector::ZeroVector;
 
 	/** Distance Traveled*/
 	float DistanceTraveled = 0.0f;

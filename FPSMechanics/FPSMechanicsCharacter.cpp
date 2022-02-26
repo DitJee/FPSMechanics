@@ -24,6 +24,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
@@ -89,6 +90,11 @@ AFPSMechanicsCharacter::AFPSMechanicsCharacter()
 	SmokeParticleSystemComponent->SetupAttachment(Mesh1P);
 	SmokeParticleSystemComponent->SetRelativeLocation(SmokeParticleLocation);
 
+	// Smoke Particle System Component for jetpack
+	HoldingParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HoldingParticleSystem"));
+	HoldingParticleSystemComponent->SetupAttachment(FP_MuzzleLocation);
+	HoldingParticleSystemComponent->SetRelativeLocation(FVector(0.0f, 50.0f, 0.0f));
+
 }
 
 void AFPSMechanicsCharacter::BeginPlay()
@@ -117,6 +123,9 @@ void AFPSMechanicsCharacter::BeginPlay()
 
 	// deactivate smoke particle
 	SmokeParticleSystemComponent->Deactivate();
+
+	// deactivate holding particle
+	HoldingParticleSystemComponent->Deactivate();
 }
 
 void AFPSMechanicsCharacter::Tick(float DeltaSeconds)
@@ -125,13 +134,13 @@ void AFPSMechanicsCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	// Update held object's and holding particle's location
-	if (PhysicsHandle != nullptr && FP_HeldObjectLocation != nullptr && HoldingParticleSystemComponent != nullptr)
+	if (PhysicsHandle != nullptr && 
+		FP_HeldObjectLocation != nullptr)
 	{
 		FVector HeldComponentLocation = FP_HeldObjectLocation->GetComponentLocation();
 
 		PhysicsHandle->SetTargetLocation(HeldComponentLocation);
-
-		HoldingParticleSystemComponent->SetRelativeLocation(FP_MuzzleLocation->GetComponentLocation());
+		
 	}
 
 	// refuel jetpack
@@ -198,8 +207,8 @@ void AFPSMechanicsCharacter::OnPressedJump()
 
 		// manipulate character's velocity
 		FVector Velocity = CharacterMovement->Velocity;
-		Velocity.X *= AirBreak;
-		Velocity.Y *= AirBreak;
+		Velocity.X *= AirBrake;
+		Velocity.Y *= AirBrake;
 
 		FVector ThrustVector;
 		ThrustVector.X = Velocity.X;
@@ -276,6 +285,8 @@ void AFPSMechanicsCharacter::OnReleasedJump()
 
 void AFPSMechanicsCharacter::FallDown()
 {
+	if (!bIsHovering) return;
+
 	// deactivate particle
 	if (SmokeParticleSystemComponent != nullptr)
 	{
@@ -288,11 +299,14 @@ void AFPSMechanicsCharacter::FallDown()
  		JetpackSoundComponent->SetActive(false);
 	}
 
-	if (!bIsHovering) return;
-
 	// change gravity scale to 1
-	GetCharacterMovement()->GravityScale = 1;
+	CharacterMovement = GetCharacterMovement();
 
+	if (CharacterMovement != nullptr)
+	{
+		CharacterMovement->GravityScale = 1;
+	}
+	
 	bIsHovering = false;
 }
 
@@ -371,65 +385,23 @@ void AFPSMechanicsCharacter::Dash()
 
 FVector AFPSMechanicsCharacter::GetDashDirection()
 {
-	/** Get movement keys state*/
-	float WKeyState = PlayerController->GetInputAnalogKeyState(EKeys::W);
-	float AKeyState = PlayerController->GetInputAnalogKeyState(EKeys::A);
-	float SKeyState = PlayerController->GetInputAnalogKeyState(EKeys::S);
-	float DKeyState = PlayerController->GetInputAnalogKeyState(EKeys::D);
+	FRotator Rotation = GetControlRotation();
+	Rotation.Roll = 0.0f;
+	Rotation.Pitch = 0.0f;
 
-	// init direction with zeros vector
-	FVector DashDirection = FVector::ZeroVector;
+	FVector RightVector = UKismetMathLibrary::GetRightVector(Rotation);
 
-	// get forward vector of the camera
-	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
+	FVector ForwardVector = UKismetMathLibrary::GetForwardVector(Rotation);
 
-	// return the vector based on different cases
-	if (WKeyState > 0 && AKeyState > 0)
-	{
-		DashDirection = ForwardVector.RotateAngleAxis(-45.0f, FVector(0.f,0.f,1.f));
-		return DashDirection;
-	}
-	else if (AKeyState > 0 && SKeyState > 0)
-	{
-		DashDirection = ForwardVector.RotateAngleAxis(-135.0f, FVector(0.f, 0.f, 1.f));
-		return DashDirection;
-	}
-	else if (SKeyState > 0 && DKeyState > 0)
-	{
-		DashDirection = ForwardVector.RotateAngleAxis(135.0f, FVector(0.f, 0.f, 1.f));
-		return DashDirection;
-	}
-	else if (DKeyState > 0 && WKeyState > 0)
-	{
-		DashDirection = ForwardVector.RotateAngleAxis(45.0f, FVector(0.f, 0.f, 1.f));
-		return DashDirection;
-	}
-	else if (WKeyState > 0)
-	{
-		DashDirection = ForwardVector;
-		return DashDirection;
-	}
-	else if (AKeyState > 0)
-	{
-		DashDirection = -FirstPersonCameraComponent->GetRightVector();
-		return DashDirection;
-	}
-	else if (SKeyState > 0)
-	{
-		DashDirection = -ForwardVector;
-		return DashDirection;
-	}
-	else if (DKeyState > 0)
-	{
-		DashDirection = FirstPersonCameraComponent->GetRightVector();
-		return DashDirection;
-	}
-	
-	else
-	{
-		return DashDirection;
-	}
+	FVector DashDirectionRight;
+	DashDirectionRight = RightVector * InputDirection.X;
 
+	FVector DashDirectionForward;
+	DashDirectionForward = ForwardVector * InputDirection.Y;
+
+	FVector DashDirection = DashDirectionRight + DashDirectionForward;
+
+	return DashDirection;
 }
 
 void AFPSMechanicsCharacter::ResetDash()
@@ -533,10 +505,12 @@ void AFPSMechanicsCharacter::OnPickUp()
 		}
 
 		// spawn particle
-		if (HoldingEmitter != nullptr)
+		if (HoldingParticleSystemComponent != nullptr)
 		{
-			HoldingParticleSystemComponent = UGameplayStatics::SpawnEmitterAtLocation(this, HoldingEmitter, FP_MuzzleLocation->GetComponentLocation(), ParticleRotation);
+			UE_LOG(LogTemp, Warning, TEXT("Holding"));
+			HoldingParticleSystemComponent->Activate();
 		}
+
 	}
 }
 
@@ -552,11 +526,16 @@ void AFPSMechanicsCharacter::OnDrop()
 
 		//UE_LOG(LogTemp, Warning, TEXT("Dropped Object"));
 
-		if (HoldingSoundComponent != nullptr && HoldingParticleSystemComponent != nullptr)
+		if (HoldingSoundComponent != nullptr)
 		{
-			// deactivate SFX and particle
+			// deactivate SFX
 			HoldingSoundComponent->SetActive(false);
-			HoldingParticleSystemComponent->DestroyComponent();
+		}
+
+		// deactivate particle
+		if (HoldingParticleSystemComponent != nullptr)
+		{
+			HoldingParticleSystemComponent->Deactivate();
 		}
 	}
 	
@@ -625,15 +604,20 @@ void AFPSMechanicsCharacter::MoveForward(float Value)
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
+
+	InputDirection.Y = Value;
 }
 
 void AFPSMechanicsCharacter::MoveRight(float Value)
 {
+
 	if (Value != 0.0f)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 	}
+
+	InputDirection.X = Value;
 }
 
 void AFPSMechanicsCharacter::TurnAtRate(float Rate)
