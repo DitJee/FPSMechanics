@@ -213,7 +213,7 @@ void AFPSMechanicsCharacter::OnPressedJump()
 		FVector ThrustVector;
 		ThrustVector.X = Velocity.X;
 		ThrustVector.Y = Velocity.Y;
-		ThrustVector.Z = Thrust;
+		ThrustVector.Z = Thrust; // add thrust
 
 		// Update Character velocity
 		CharacterMovement->Velocity = ThrustVector;
@@ -385,20 +385,21 @@ void AFPSMechanicsCharacter::Dash()
 
 FVector AFPSMechanicsCharacter::GetDashDirection()
 {
-	FRotator Rotation = GetControlRotation();
+	// get control rotation
+	
+	FRotator Rotation = PlayerController->GetControlRotation();
 	Rotation.Roll = 0.0f;
 	Rotation.Pitch = 0.0f;
 
+	// get right vector from rotation
 	FVector RightVector = UKismetMathLibrary::GetRightVector(Rotation);
 
+	// get forward vector from rotation
 	FVector ForwardVector = UKismetMathLibrary::GetForwardVector(Rotation);
 
-	FVector DashDirectionRight;
-	DashDirectionRight = RightVector * InputDirection.X;
-
-	FVector DashDirectionForward;
-	DashDirectionForward = ForwardVector * InputDirection.Y;
-
+	// create dash direction
+	FVector DashDirectionRight = RightVector * InputDirection.X;
+	FVector DashDirectionForward = ForwardVector * InputDirection.Y;
 	FVector DashDirection = DashDirectionRight + DashDirectionForward;
 
 	return DashDirection;
