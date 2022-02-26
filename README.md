@@ -25,6 +25,13 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_Dash)
   float DashDistance;
 ```
 
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `FVector` GetDashDirection()      | - | `FVector` DashDirection |Get the dash direction based on player input |
+| `void` OnDash()    | -   |   -| Event that fired when the player perform the dash and set a delay to disable the ability to dash for a second |
+| `void` Dash() | -     |   - | Update the player's location overtime until the distance travel is more than or equal to `DashDistance` |
+| `void` ResetDash() | -     |    - | Give back the player's ability to dash |
+
 ## Grav Gun
 The Grav Gun is probably the most fun mechanic to work on in this test since it is inspired by one of the most popular games, Half-life 2.
 Essentially, this mechanic allows the player to pick up the object which is simulating physics and fire it. 
@@ -44,6 +51,11 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_GravGun)
   float LaunchForce = 500.0f;
 
 ```
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `void` CheckIsHit()    | -   |   -| Perform a line tracing to check whether the hit object is simulating physic or not. Then, assign the object as `PickUpComponent`  |
+| `void` OnPickUp() | -     |   - | Grab the `PickUpComponent` and attach it to `GrabLocation` |
+| `void` OnDrop() | -     |    - | Release the `PickUpComponent` from the Gravity Gun|
 
 ## Jetpack
 The last mechanic in the test is the Jetpack. The mechanic allows the player to launch himself in the air when the player is holding `spacebar`. 
