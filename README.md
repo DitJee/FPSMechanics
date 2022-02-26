@@ -1,6 +1,6 @@
 # FPSMechanics
 
-This documentation will cover all three gameplay mechanics: Dashing, Grav Gun, and Jetpack. The demo can be viewed from the project files and YouTube video via these link: 
+This documentation will cover all three gameplay mechanics: Dashing, Grav Gun, and Jetpack. The demo can be viewed from the project files and YouTube videos via these link: 
 
 Google Drive: https://drive.google.com/drive/folders/1D9Jh5nxNgXfVwoBtVjs8SRxM_7eolvlJ?usp=sharing
   
