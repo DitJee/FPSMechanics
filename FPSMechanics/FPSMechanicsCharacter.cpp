@@ -353,7 +353,7 @@ void AFPSMechanicsCharacter::Dash()
 
 	bCanDash = false;
 
-	// calcualte dashing velocity
+	// calculate dashing velocity
 	FVector DashVelocity;
 	DashVelocity = CurrentVelocity * DashSpeed;
 	DashVelocity.Z = 0.0f;
