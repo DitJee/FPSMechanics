@@ -39,8 +39,6 @@ void AFPSMechanicsHUD::DrawHUD()
 }
 
 void AFPSMechanicsHUD::BeginPlay()
-
-// fuck slate, do every UI in UMG
 {
 	Super::BeginPlay();
 
