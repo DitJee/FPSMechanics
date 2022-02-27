@@ -171,7 +171,9 @@ The Function of this widget can be summarized in the table below.
 | `virtual void` NativeConstruct() `override`| -     |    - | Set `bIsHit` to `false`|
 
 ### Fuel level
-This widget consists of a single `Progress Bar` which represents the fuel level inside the Jetpack.
+This widget consists of a single `Progress Bar` which represents the fuel level inside the Jetpack as shown in the figure below.
+
+![image](https://user-images.githubusercontent.com/56587469/155870193-6466fe69-44c1-43d6-82b6-9887e3df4c86.png)
 
 The variables inside the component can be summarized in the gist below.
 
