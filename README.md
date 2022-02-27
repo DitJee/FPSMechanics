@@ -148,5 +148,46 @@ The main feature of this widget is the ability to change its color when the line
 
 ![image](https://user-images.githubusercontent.com/56587469/155869674-2ad9be5c-2d32-4138-a7a8-81a41f7bc1ff.png)
 
+The color of the crosshair is binded to a function inside the `Blueprint` to change the color based on `bIsHit` boolean.
+
+The variables inside the component can be summarized in the gist below.
+
+```c++
+protected:
+virtual void NativeConstruct() override;
+
+public:
+
+UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  bool bIsHit;
+
+UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+  UImage* IconImage;
+```
 The Function of this widget can be summarized in the table below.
+
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `virtual void` NativeConstruct() `override`| -     |    - | Set `bIsHit` to `false`|
+
 ### Fuel level
+This widget consists of a single `Progress Bar` which represents the fuel level inside the Jetpack.
+
+The variables inside the component can be summarized in the gist below.
+
+```c++
+protected:
+virtual void NativeConstruct() override;
+
+public:
+UPROPERTY(meta = (BindWidget))
+  UProgressBar* FuelTank;
+
+void SetFuelLevel(float fuelLevel);
+```
+The Function of this widget can be summarized in the table below.
+
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `virtual void` NativeConstruct() `override`| -     |    - | Set the fuel level to 100%|
+| `void` SetFuelLevel(float fuelLevel)| -     |    - | Update the new fuel level|
