@@ -148,7 +148,7 @@ The main feature of this widget is the ability to change its color when the line
 
 ![image](https://user-images.githubusercontent.com/56587469/155869674-2ad9be5c-2d32-4138-a7a8-81a41f7bc1ff.png)
 
-The color of the crosshair is binded to a function inside the `Blueprint` to change the color based on `bIsHit` boolean.
+The color of the crosshair is binded to a function inside the `Blueprint` which changes the color based on `bIsHit` boolean.
 
 The variables inside the component can be summarized in the gist below.
 
@@ -171,7 +171,9 @@ The Function of this widget can be summarized in the table below.
 | `virtual void` NativeConstruct() `override`| -     |    - | Set `bIsHit` to `false`|
 
 ### Fuel level
-This widget consists of a single `Progress Bar` which represents the fuel level inside the Jetpack.
+This widget consists of a single `Progress Bar` which represents the fuel level inside the Jetpack as shown in the figure below.
+
+![image](https://user-images.githubusercontent.com/56587469/155870193-6466fe69-44c1-43d6-82b6-9887e3df4c86.png)
 
 The variables inside the component can be summarized in the gist below.
 
