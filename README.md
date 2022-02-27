@@ -12,7 +12,7 @@ Google Drive: https://drive.google.com/drive/folders/1D9Jh5nxNgXfVwoBtVjs8SRxM_7
 
 ## Dash
 The dash is the first mechanic implemented in the test. This mechanic took approximately an hour of work to create and tune to the author personally liking. 
-The dash implemented in the test is octa-direction which means the player can perform the dash in 8 directions: north, east, south, west, northeast, southeast, southwest, and northwest as shown in figure below.
+The dash implemented in the test is multi-direction which means the player can perform the dash in directions depending on controller input.
 The parameters that the designer can change are dash speed and distance.
 
 ```c++
@@ -24,6 +24,13 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_Dash)
 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_Dash)
   float DashDistance;
 ```
+
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `FVector` GetDashDirection()      | - | `FVector` DashDirection |Get the dash direction based on player input |
+| `void` OnDash()    | -   |   -| Event that fired when the player perform the dash and set a delay to disable the ability to dash for a second |
+| `void` Dash() | -     |   - | Update the player's location overtime until the distance travel is more than or equal to `DashDistance` |
+| `void` ResetDash() | -     |    - | Give back the player's ability to dash |
 
 ## Grav Gun
 The Grav Gun is probably the most fun mechanic to work on in this test since it is inspired by one of the most popular games, Half-life 2.
@@ -44,6 +51,11 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_GravGun)
   float LaunchForce = 500.0f;
 
 ```
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `void` CheckIsHit()    | -   |   -| Perform a line tracing to check whether the hit object is simulating physic or not. Then, assign the object as `PickUpComponent`  |
+| `void` OnPickUp() | -     |   - | Grab the `PickUpComponent` and attach it to `GrabLocation` |
+| `void` OnDrop() | -     |    - | Release the `PickUpComponent` from the Gravity Gun|
 
 ## Jetpack
 The last mechanic in the test is the Jetpack. The mechanic allows the player to launch himself in the air when the player is holding `spacebar`. 
@@ -77,3 +89,11 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
   float RefuelDelay = 2.f;
   ```
+  
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `void` SetIsRefuelable()    | -   |   -| Set refuelable flag to `true` which allows the fuel level to be increased  |
+| `void` FallDown() | -     |   - | Deactivate the particle effect and SFX. Then, Set the character's gravity scale to `1` |
+| `void` ConsumeFuel() | -     |    - | Calculate and decrease the fuel level overtime|
+| `void` OnPressedJump() | -     |   - | Determine whether the character should perform a jetpack or a normal jump |
+| `void` OnReleasedJump() | -     |    - | Stop the jumping or jetpack mechanic. Then, set a delay before the refueling is allowed|
