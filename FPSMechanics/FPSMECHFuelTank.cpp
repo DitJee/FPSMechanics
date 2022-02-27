@@ -8,7 +8,7 @@ void UFPSMECHFuelTank::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	FuelTank->SetPercent(100.0f);
+	FuelTank->SetPercent(1.0f);
 }
 
 void UFPSMECHFuelTank::SetFuelLevel(float fuelLevel)

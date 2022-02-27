@@ -18,9 +18,6 @@ class AFPSMechanicsHUD : public AHUD
 public:
 	AFPSMechanicsHUD();
 
-	/** Primary draw call for the HUD */
-	virtual void DrawHUD() override;
-
 	virtual void BeginPlay() override;
 
 	void DrawCrosshair(bool bFlag);
@@ -33,8 +30,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UFPSMECHFuelTank> WBP_FuelTank;
 private:
-	/** Crosshair asset pointer */
-	class UTexture2D* CrosshairTex;
 
 	UUserWidget* W_Crosshair;
 
