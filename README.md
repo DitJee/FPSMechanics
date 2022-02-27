@@ -25,6 +25,8 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_Dash)
   float DashDistance;
 ```
 
+ The Functions of this mechanic can be summarized in the table below.
+ 
 | Function Name        | Input           | Output  | Description |
 | ------------- |:-------------:|:-------------: |:----- |
 | `FVector` GetDashDirection()      | - | `FVector` DashDirection |Get the dash direction based on player input |
@@ -51,6 +53,9 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_GravGun)
   float LaunchForce = 500.0f;
 
 ```
+
+ The Functions of this mechanic can be summarized in the table below.
+ 
 | Function Name        | Input           | Output  | Description |
 | ------------- |:-------------:|:-------------: |:----- |
 | `void` CheckIsHit()    | -   |   -| Perform a line tracing to check whether the hit object is simulating physic or not. Then, assign the object as `PickUpComponent`  |
@@ -89,6 +94,7 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
   float RefuelDelay = 2.f;
   ```
+  The Functions of this mechanic can be summarized in the table below.
   
 | Function Name        | Input           | Output  | Description |
 | ------------- |:-------------:|:-------------: |:----- |
@@ -97,3 +103,50 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
 | `void` ConsumeFuel() | -     |    - | Calculate and decrease the fuel level overtime|
 | `void` OnPressedJump() | -     |   - | Determine whether the character should perform a jetpack or a normal jump |
 | `void` OnReleasedJump() | -     |    - | Stop the jumping or jetpack mechanic. Then, set a delay before the refueling is allowed|
+
+## Widgets
+
+To make a better user experience, the crosshair and fuel level widgets are created. The widget is composed inside UMG and bind its functionality inside C++.
+These widgets can be access via `HUD` component.
+
+### HUD
+This component acts as a medium between the character and other widgets.
+The variables inside the component can be summarized in the gist below.
+
+
+```c++
+public:
+AFPSMechanicsHUD();
+
+virtual void BeginPlay() override;
+
+void DrawCrosshair(bool bFlag);
+
+void SetFuelLevel(float fuelLevel);
+
+UPROPERTY(EditAnywhere)
+  TSubclassOf<UFPSMECHCrossHair> WBP_Crosshair;
+
+UPROPERTY(EditAnywhere)
+  TSubclassOf<UFPSMECHFuelTank> WBP_FuelTank;
+private:
+
+UUserWidget* W_Crosshair;
+
+UUserWidget* W_FuelTank;
+```
+The Function of this HUD can be summarized in the table below.
+
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `void` DrawCrosshair()    | -   |   -| Set the flag to tell the crosshair to change its color  |
+| `void` SetFuelLevel() | -     |   - | Pass the new fuel level to be updated in the fuel level widget |
+| `virtual void` BeginPlay() `override`| -     |    - | Create widgets and add them to viewport|
+
+### Crosshair
+The main feature of this widget is the ability to change its color when the line tracing hits the object of interest as shown in the figure below.
+
+![image](https://user-images.githubusercontent.com/56587469/155869674-2ad9be5c-2d32-4138-a7a8-81a41f7bc1ff.png)
+
+The Function of this widget can be summarized in the table below.
+### Fuel level
