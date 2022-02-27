@@ -89,3 +89,11 @@ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay_JetPack)
   float RefuelDelay = 2.f;
   ```
+  
+| Function Name        | Input           | Output  | Description |
+| ------------- |:-------------:|:-------------: |:----- |
+| `void` SetIsRefuelable()    | -   |   -| Set refuelable flag to `true` which allows the fuel level to be increased  |
+| `void` FallDown() | -     |   - | Deactivate the particle effect and SFX. Then, Set the character's gravity scale to `1` |
+| `void` ConsumeFuel() | -     |    - | Calculate and decrease the fuel level overtime|
+| `void` OnPressedJump() | -     |   - | Determine whether the character should perform a jetpack or a normal jump |
+| `void` OnReleasedJump() | -     |    - | Stop the jumping or jetpack mechanic. Then, set a delay before the refueling is allowed|
