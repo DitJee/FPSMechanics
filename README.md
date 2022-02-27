@@ -12,7 +12,7 @@ Google Drive: https://drive.google.com/drive/folders/1D9Jh5nxNgXfVwoBtVjs8SRxM_7
 
 ## Dash
 The dash is the first mechanic implemented in the test. This mechanic took approximately an hour of work to create and tune to the author personally liking. 
-The dash implemented in the test is octa-direction which means the player can perform the dash in 8 directions: north, east, south, west, northeast, southeast, southwest, and northwest as shown in figure below.
+The dash implemented in the test is multi-direction which means the player can perform the dash in directions depend on controller input.
 The parameters that the designer can change are dash speed and distance.
 
 ```c++
